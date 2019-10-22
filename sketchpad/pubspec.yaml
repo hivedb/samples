@@ -6,15 +6,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  hive: any
+  hive: 1.1.0
   hive_flutter: any
-  path_provider: ^1.2.0
-
-dependency_overrides:
-  hive:
-    path: ../../hive
-  hive_flutter:
-    path: ../../hive_flutter
+  path_provider: ^1.4.0
 
 flutter:
   uses-material-design: true
