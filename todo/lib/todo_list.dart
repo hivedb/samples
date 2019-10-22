@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo/todo.dart';
-import 'package:hive/hive.dart';
 
 class TodoList extends StatelessWidget {
   final List<Todo> todos;
@@ -54,15 +53,15 @@ class TodoList extends StatelessWidget {
               iconSize: 30,
               icon: Icon(todo.done ? Icons.clear : Icons.check),
               onPressed: () {
-                var newTodo = todo.copyWith(done: !todo.done);
-                Hive.box('todos').put(newTodo.id, newTodo);
+                todo.done = !todo.done;
+                todo.save();
               },
             ),
             IconButton(
               iconSize: 30,
               icon: Icon(Icons.delete),
               onPressed: () {
-                Hive.box('todos').delete(todo.id);
+                todo.delete();
               },
             ),
           ],

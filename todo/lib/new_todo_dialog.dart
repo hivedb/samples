@@ -42,7 +42,7 @@ class _NewTodoDialogState extends State<NewTodoDialog> {
               var todo = Todo()
                 ..name = controller.text
                 ..created = DateTime.now();
-              Hive.box('todos').put(todo.id, todo);
+              Hive.box('todos').add(todo);
             }
             Navigator.of(context).pop();
           },

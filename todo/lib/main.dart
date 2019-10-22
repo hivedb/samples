@@ -8,7 +8,7 @@ import 'package:todo/todo_list.dart';
 import 'is_browser/vm.dart' if (dart.library.html) 'is_browser/js.dart';
 
 void main() {
-  Hive.registerAdapter(TodoAdapter(), 35);
+  Hive.registerAdapter(TodoAdapter(), 0);
   runApp(MyApp());
 }
 
