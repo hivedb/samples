@@ -1,17 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'is_browser/vm.dart' if (dart.library.html) 'is_browser/js.dart';
 
-void main() => runApp(MyApp());
-
-Future _openBox() async {
-  if (!isBrowser) {
+void main() async {
+  if (!kIsWeb) {
     var dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
   }
-  return await Hive.openBox('myBox');
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +22,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'OpenSans',
       ),
       home: FutureBuilder(
-        future: _openBox(),
+        future: Hive.openBox('myBox'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.error != null) {
@@ -74,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if (isBrowser)
+            if (kIsWeb)
               Text('Refresh this tab to test persistence')
             else
               Text('Restart the app to test persistence'),

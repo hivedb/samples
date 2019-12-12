@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
@@ -5,25 +6,18 @@ import 'package:path_provider/path_provider.dart';
 import 'package:todo/new_todo_dialog.dart';
 import 'package:todo/todo.dart';
 import 'package:todo/todo_list.dart';
-import 'is_browser/vm.dart' if (dart.library.html) 'is_browser/js.dart';
 
-void main() {
+void main() async {
+  if (!kIsWeb) {
+    var dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+  }
+
   Hive.registerAdapter(TodoAdapter(), 0);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  Future _openBoxes() async {
-    if (!isBrowser) {
-      var dir = await getApplicationDocumentsDirectory();
-      Hive.init(dir.path);
-    }
-    return Future.wait([
-      Hive.openBox('settings'),
-      Hive.openBox('todos'),
-    ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,7 +30,10 @@ class MyApp extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: 600),
           child: FutureBuilder(
-            future: _openBoxes(),
+            future: Future.wait([
+              Hive.openBox('settings'),
+              Hive.openBox('todos'),
+            ]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.error != null) {
@@ -117,7 +114,7 @@ class TodoMainScreen extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Text(
-          isBrowser
+          kIsWeb
               ? 'Refresh this tab to test persistence.'
               : 'Restart the app to test persistence.',
           textAlign: TextAlign.center,

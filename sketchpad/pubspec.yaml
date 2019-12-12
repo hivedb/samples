@@ -1,14 +1,14 @@
 name: sketchpad
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  hive: 1.1.0
+  hive: ^1.2.0-dev
   hive_flutter: any
-  path_provider: ^1.4.0
+  path_provider: any
 
 flutter:
   uses-material-design: true

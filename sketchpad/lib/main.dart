@@ -1,25 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:sketchpad/colored_path_adapter.dart';
 import 'package:sketchpad/drawing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
-import 'is_browser/vm.dart' if (dart.library.html) 'is_browser/js.dart';
 
-void main() {
+void main() async {
+  if (!kIsWeb) {
+    var dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+  }
+
+  Hive.registerAdapter(ColoredPathAdapter(), 35);
+
   runApp(DrawApp());
 }
 
 class DrawApp extends StatelessWidget {
-  Future _openBox() async {
-    if (!isBrowser) {
-      var dir = await getApplicationDocumentsDirectory();
-      Hive.init(dir.path);
-    }
-    Hive.registerAdapter(ColoredPathAdapter(), 35);
-
-    return await Hive.openBox('sketch');
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,7 +27,7 @@ class DrawApp extends StatelessWidget {
         fontFamily: 'OpenSans',
       ),
       home: FutureBuilder(
-        future: _openBox(),
+        future: Hive.openBox('sketch'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.error != null) {
