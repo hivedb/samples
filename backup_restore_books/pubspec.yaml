@@ -1,5 +1,5 @@
-name: favorite_books
-description: A HiveDB sample project that demonstrates simple use of HiveDB.
+name: backup_restore_books
+description: A HiveDB sample project that demonstrates backup & restore functionality.
 
 version: 1.0.0+1
 
@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   hive: ^1.3.0
   hive_flutter: ^0.3.0+1
+  path_provider: ^1.5.1
+  file_picker: ^1.4.3+2
 
 dev_dependencies:
   flutter_test:
