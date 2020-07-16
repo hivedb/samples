@@ -1,19 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo/new_todo_dialog.dart';
 import 'package:todo/todo.dart';
 import 'package:todo/todo_list.dart';
 
 void main() async {
-  if (!kIsWeb) {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-  }
+  await Hive.initFlutter();
 
-  Hive.registerAdapter(TodoAdapter(), 0);
+  Hive.registerAdapter(TodoAdapter());
   runApp(MyApp());
 }
 
@@ -32,7 +28,7 @@ class MyApp extends StatelessWidget {
           child: FutureBuilder(
             future: Future.wait([
               Hive.openBox('settings'),
-              Hive.openBox('todos'),
+              Hive.openBox<Todo>('todos'),
             ]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
@@ -68,8 +64,8 @@ class TodoMainScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: WatchBoxBuilder(
-            box: Hive.box('settings'),
+          child: ValueListenableBuilder(
+            valueListenable: Hive.box('settings').listenable(),
             builder: _buildWithBox,
           ),
         ),
@@ -79,7 +75,7 @@ class TodoMainScreen extends StatelessWidget {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (BuildContext context) {
+            builder: (context) {
               return NewTodoDialog();
             },
           );
@@ -88,7 +84,7 @@ class TodoMainScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWithBox(BuildContext context, Box settings) {
+  Widget _buildWithBox(BuildContext context, Box settings, Widget child) {
     var reversed = settings.get('reversed', defaultValue: true) as bool;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,7 +96,7 @@ class TodoMainScreen extends StatelessWidget {
               'Hive To-Do',
               style: TextStyle(fontSize: 40),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             IconButton(
               icon: Icon(
                 reversed ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
@@ -112,18 +108,18 @@ class TodoMainScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           kIsWeb
               ? 'Refresh this tab to test persistence.'
               : 'Restart the app to test persistence.',
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         Expanded(
-          child: WatchBoxBuilder(
-            box: Hive.box('todos'),
-            builder: (context, box) {
+          child: ValueListenableBuilder<Box<Todo>>(
+            valueListenable: Hive.box<Todo>('todos').listenable(),
+            builder: (context, box, _) {
               var todos = box.values.toList().cast<Todo>();
               if (reversed) {
                 todos = todos.reversed.toList();

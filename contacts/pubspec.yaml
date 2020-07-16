@@ -4,19 +4,23 @@ description: A HiveDB sample project that demonstrates TypeAdapter functionality
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.6.0 <3.0.0'
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  hive: ^1.3.0
-  hive_flutter: ^0.3.0+1
+  hive:
+  hive_flutter:
+    git:
+      url: git://github.com/hivedb/hive.git
+      path: hive_flutter
 
 dev_dependencies:
-  hive_generator: ^0.7.0
-  build_runner: ^1.7.2
-  flutter_test:
-    sdk: flutter
+  hive_generator:
+    git:
+      url: git://github.com/hivedb/hive.git
+      path: hive_generator
+  build_runner: ^1.10.0
 
 flutter:
   uses-material-design: true

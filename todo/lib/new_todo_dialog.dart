@@ -11,6 +11,12 @@ class _NewTodoDialogState extends State<NewTodoDialog> {
   TextEditingController controller = TextEditingController();
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Create To-Do Entry'),
@@ -42,7 +48,7 @@ class _NewTodoDialogState extends State<NewTodoDialog> {
               var todo = Todo()
                 ..name = controller.text
                 ..created = DateTime.now();
-              Hive.box('todos').add(todo);
+              Hive.box<Todo>('todos').add(todo);
             }
             Navigator.of(context).pop();
           },

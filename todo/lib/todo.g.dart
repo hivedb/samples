@@ -8,33 +8,39 @@ part of 'todo.dart';
 
 class TodoAdapter extends TypeAdapter<Todo> {
   @override
+  final int typeId = 0;
+
+  @override
   Todo read(BinaryReader reader) {
-    var obj = Todo();
-    var numOfFields = reader.readByte();
-    for (var i = 0; i < numOfFields; i++) {
-      switch (reader.readByte()) {
-        case 0:
-          obj.name = reader.read() as String;
-          break;
-        case 1:
-          obj.created = reader.read() as DateTime;
-          break;
-        case 2:
-          obj.done = reader.read() as bool;
-          break;
-      }
-    }
-    return obj;
+    final int numOfFields = reader.readByte();
+    final Map<int, dynamic> fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Todo()
+      ..name = fields[0] as String
+      ..created = fields[1] as DateTime
+      ..done = fields[2] as bool;
   }
 
   @override
   void write(BinaryWriter writer, Todo obj) {
-    writer.writeByte(3);
-    writer.writeByte(0);
-    writer.write(obj.name);
-    writer.writeByte(1);
-    writer.write(obj.created);
-    writer.writeByte(2);
-    writer.write(obj.done);
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.created)
+      ..writeByte(2)
+      ..write(obj.done);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TodoAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

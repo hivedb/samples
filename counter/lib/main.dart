@@ -2,13 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 
 void main() async {
-  if (!kIsWeb) {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-  }
+  await Hive.initFlutter();
   runApp(MyApp());
 }
 
@@ -22,7 +18,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'OpenSans',
       ),
       home: FutureBuilder(
-        future: Hive.openBox('myBox'),
+        future: Hive.openBox<int>('myBox'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.error != null) {
@@ -36,7 +32,15 @@ class MyApp extends StatelessWidget {
               return MyHomePage(title: 'Hive Demo Page');
             }
           } else {
-            return Scaffold();
+            return Scaffold(
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Loading...'),
+                  CircularProgressIndicator(),
+                ],
+              ),
+            );
           }
         },
       ),
@@ -45,7 +49,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({@required this.title});
 
   final String title;
 
@@ -54,12 +58,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Box _box;
+  Box<int> _box;
 
   @override
   void initState() {
-    _box = Hive.box('myBox');
     super.initState();
+    _box = Hive.box<int>('myBox');
   }
 
   @override
@@ -78,12 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
               Text('Restart the app to test persistence'),
             SizedBox(height: 8),
             Text('You have pushed the button this many times:'),
-            WatchBoxBuilder(
-              box: _box,
-              builder: (context, box) {
+            ValueListenableBuilder<Box<int>>(
+              valueListenable: _box.listenable(),
+              builder: (context, box, _) {
                 return Text(
-                  box.get('counter', defaultValue: 0).toString(),
-                  style: Theme.of(context).textTheme.display1,
+                  '${box.get('counter', defaultValue: 0)}',
+                  style: Theme.of(context).textTheme.headline4,
                 );
               },
             )

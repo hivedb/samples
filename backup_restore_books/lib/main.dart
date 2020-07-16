@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +41,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   Box<String> favoriteBooksBox;
 
   @override
   void initState() {
     super.initState();
-    favoriteBooksBox = Hive.box(favoritesBox);
+    favoriteBooksBox = Hive.box<String>(favoritesBox);
   }
 
   Widget getIcon(int index) {
@@ -66,7 +66,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> createBackup() async {
-    if (favoriteBooksBox.isEmpty) return;
+    if (favoriteBooksBox.isEmpty) {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(content: Text('Pick a favorite book.')),
+      );
+      return;
+    }
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text('Creating backup...')),
+    );
     Map<String, String> map = favoriteBooksBox
         .toMap()
         .map((key, value) => MapEntry(key.toString(), value));
@@ -93,9 +101,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> restoreBackup() async {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text('Restoring backup...')),
+    );
     File file = await FilePicker.getFile(
-      type: FileType.ANY,
-      fileExtension: "hivebackup",
+      type: FileType.any,
     );
     if (file == null) return;
     favoriteBooksBox.clear();
@@ -114,6 +124,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Favorite Books w/ Hive'),
           actions: <Widget>[
@@ -144,17 +155,6 @@ class _MyAppState extends State<MyApp> {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-class RestorePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Restore'),
       ),
     );
   }

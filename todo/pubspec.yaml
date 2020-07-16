@@ -1,4 +1,7 @@
 name: todo
+version: 1.0.0
+description: This is a todo sample app for the Hive package.
+
 environment:
   sdk: ">=2.6.0 <3.0.0"
 
@@ -6,13 +9,18 @@ dependencies:
   flutter:
     sdk: flutter
 
-  hive: ^1.2.0-dev
-  hive_flutter: any
-  path_provider: any
+  hive:
+  hive_flutter:
+    git:
+      url: git://github.com/hivedb/hive.git
+      path: hive_flutter
 
 dev_dependencies:
-  hive_generator: any
-  build_runner: any
+  build_runner: ^1.10.0
+  hive_generator:
+    git:
+      url: git://github.com/hivedb/hive.git
+      path: hive_generator
 
 flutter:
   uses-material-design: true

@@ -13,7 +13,7 @@ enum Relationship {
   @HiveField(1)
   Friend,
 }
-const relationshipString = <Relationship, String>{
+const relationships = <Relationship, String>{
   Relationship.Family: "Family",
   Relationship.Friend: "Friend",
 };
@@ -43,6 +43,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Widget _buildDivider() => const SizedBox(height: 5);
+
     return MaterialApp(
       title: 'Contacts App',
       home: Scaffold(
@@ -57,11 +59,10 @@ class MyApp extends StatelessWidget {
                 child: Text("No contacts"),
               );
             return ListView.builder(
-              itemCount: box.values.length,
+              itemCount: box.length,
               itemBuilder: (context, index) {
-                Contact currentContact = box.getAt(index);
-                String relationship =
-                    relationshipString[currentContact.relationship];
+                Contact c = box.getAt(index);
+                String relationship = relationships[c.relationship];
                 return InkWell(
                   onLongPress: () {
                     showDialog(
@@ -69,7 +70,7 @@ class MyApp extends StatelessWidget {
                       barrierDismissible: true,
                       child: AlertDialog(
                         content: Text(
-                          "Do you want to delete ${currentContact.name}?",
+                          "Do you want to delete ${c.name}?",
                         ),
                         actions: <Widget>[
                           FlatButton(
@@ -79,8 +80,8 @@ class MyApp extends StatelessWidget {
                           FlatButton(
                             child: Text("Yes"),
                             onPressed: () async {
-                              await box.deleteAt(index);
                               Navigator.of(context).pop();
+                              await box.deleteAt(index);
                             },
                           ),
                         ],
@@ -93,15 +94,15 @@ class MyApp extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          SizedBox(height: 5),
-                          Text(currentContact.name),
-                          SizedBox(height: 5),
-                          Text(currentContact.phoneNumber),
-                          SizedBox(height: 5),
-                          Text("Age: ${currentContact.age}"),
-                          SizedBox(height: 5),
+                          _buildDivider(),
+                          Text(c.name),
+                          _buildDivider(),
+                          Text(c.phoneNumber),
+                          _buildDivider(),
+                          Text("Age: ${c.age}"),
+                          _buildDivider(),
                           Text("Relationship: $relationship"),
-                          SizedBox(height: 5),
+                          _buildDivider(),
                         ],
                       ),
                     ),
@@ -117,7 +118,8 @@ class MyApp extends StatelessWidget {
               child: Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => AddContact()));
+                  MaterialPageRoute(builder: (context) => AddContact()),
+                );
               },
             );
           },
@@ -152,74 +154,69 @@ class _AddContactState extends State<AddContact> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Form(
-            key: widget.formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    autofocus: true,
-                    initialValue: "",
-                    decoration: const InputDecoration(
-                      labelText: "Name",
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        name = value;
-                      });
-                    },
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    initialValue: "",
-                    maxLength: 3,
-                    maxLengthEnforced: true,
-                    decoration: const InputDecoration(
-                      labelText: "Age",
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        age = int.parse(value);
-                      });
-                    },
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.phone,
-                    initialValue: "",
-                    decoration: const InputDecoration(
-                      labelText: "Phone",
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        phoneNumber = value;
-                      });
-                    },
-                  ),
-                  DropdownButton<Relationship>(
-                    items: relationshipString.keys.map((Relationship value) {
-                      return DropdownMenuItem<Relationship>(
-                        value: value,
-                        child: Text(relationshipString[value]),
-                      );
-                    }).toList(),
-                    value: relationship,
-                    hint: Text("Relationship"),
-                    onChanged: (value) {
-                      setState(() {
-                        relationship = value;
-                      });
-                    },
-                  ),
-                  OutlineButton(
-                    child: Text("Submit"),
-                    onPressed: onFormSubmit,
-                  ),
-                ],
+        child: Form(
+          key: widget.formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(8.0),
+            children: <Widget>[
+              TextFormField(
+                autofocus: true,
+                initialValue: "",
+                decoration: const InputDecoration(
+                  labelText: "Name",
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    name = value;
+                  });
+                },
               ),
-            ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                initialValue: "",
+                maxLength: 3,
+                maxLengthEnforced: true,
+                decoration: const InputDecoration(
+                  labelText: "Age",
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    age = int.parse(value);
+                  });
+                },
+              ),
+              TextFormField(
+                keyboardType: TextInputType.phone,
+                initialValue: "",
+                decoration: const InputDecoration(
+                  labelText: "Phone",
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    phoneNumber = value;
+                  });
+                },
+              ),
+              DropdownButtonFormField(
+                items: relationships.keys.map((Relationship value) {
+                  return DropdownMenuItem<Relationship>(
+                    value: value,
+                    child: Text(relationships[value]),
+                  );
+                }).toList(),
+                value: relationship,
+                hint: Text("Relationship"),
+                onChanged: (value) {
+                  setState(() {
+                    relationship = value;
+                  });
+                },
+              ),
+              OutlineButton(
+                child: Text("Submit"),
+                onPressed: onFormSubmit,
+              ),
+            ],
           ),
         ),
       ),
