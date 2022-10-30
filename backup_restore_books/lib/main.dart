@@ -104,10 +104,11 @@ class _MyAppState extends State<MyApp> {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(content: Text('Restoring backup...')),
     );
-    File file = await FilePicker.getFile(
+    FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.any,
     );
-    if (file == null) return;
+    if (result == null) return;
+    File file = File(result.files.single.path);
     favoriteBooksBox.clear();
     Map<dynamic, dynamic> map =
         jsonDecode(await file.readAsString()) as Map<dynamic, dynamic>;
