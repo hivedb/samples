@@ -9,18 +9,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  hive:
-  hive_flutter:
-    git:
-      url: git://github.com/hivedb/hive.git
-      path: hive_flutter
+  hive: any
+  hive_flutter: any
 
 dev_dependencies:
-  hive_generator:
-    git:
-      url: git://github.com/hivedb/hive.git
-      path: hive_generator
-  build_runner: ^1.10.0
+  hive_generator: any
+  build_runner: ^2.1.0
 
 flutter:
   uses-material-design: true
