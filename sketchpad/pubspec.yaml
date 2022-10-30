@@ -1,4 +1,10 @@
 name: sketchpad
+description: A HiveDB sample project.
+
+publish_to: "none"
+
+version: 1.0.0
+
 environment:
   sdk: ">=2.6.0 <3.0.0"
 
@@ -6,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  hive: ^1.2.0-dev
+  hive: any
   hive_flutter: any
   path_provider: any
 

@@ -1,7 +1,8 @@
-import 'package:sketchpad/colored_path.dart';
-import 'package:sketchpad/path_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+
+import 'colored_path.dart';
+import 'path_painter.dart';
 
 class DrawingArea extends StatefulWidget {
   final int selectedColorIndex;

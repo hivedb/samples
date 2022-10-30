@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:sketchpad/colored_path_adapter.dart';
-import 'package:sketchpad/drawing_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'colored_path_adapter.dart';
+import 'drawing_screen.dart';
 
 void main() async {
   if (!kIsWeb) {
@@ -11,7 +12,7 @@ void main() async {
     Hive.init(dir.path);
   }
 
-  Hive.registerAdapter(ColoredPathAdapter(), 35);
+  Hive.registerAdapter(ColoredPathAdapter());
 
   runApp(DrawApp());
 }

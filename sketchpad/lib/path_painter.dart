@@ -1,5 +1,6 @@
-import 'package:sketchpad/colored_path.dart';
 import 'package:flutter/rendering.dart';
+
+import 'colored_path.dart';
 
 class PathPainter extends CustomPainter {
   final ColoredPath path;
