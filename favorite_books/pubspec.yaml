@@ -9,8 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  hive: ^1.3.0
-  hive_flutter: ^0.3.0+1
+  hive: any
+  hive_flutter: any
 
 dev_dependencies:
   flutter_test:

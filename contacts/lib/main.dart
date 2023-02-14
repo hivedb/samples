@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 part 'main.g.dart';
 
@@ -68,7 +69,7 @@ class MyApp extends StatelessWidget {
                     showDialog(
                       context: context,
                       barrierDismissible: true,
-                      child: AlertDialog(
+                      builder: (_) => AlertDialog(
                         content: Text(
                           "Do you want to delete ${c.name}?",
                         ),
@@ -175,7 +176,7 @@ class _AddContactState extends State<AddContact> {
                 keyboardType: TextInputType.number,
                 initialValue: "",
                 maxLength: 3,
-                maxLengthEnforced: true,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: const InputDecoration(
                   labelText: "Age",
                 ),
@@ -212,7 +213,7 @@ class _AddContactState extends State<AddContact> {
                   });
                 },
               ),
-              OutlineButton(
+              OutlinedButton(
                 child: Text("Submit"),
                 onPressed: onFormSubmit,
               ),

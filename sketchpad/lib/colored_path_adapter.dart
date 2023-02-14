@@ -1,8 +1,12 @@
-import 'package:sketchpad/colored_path.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 
+import 'colored_path.dart';
+
 class ColoredPathAdapter extends TypeAdapter<ColoredPath> {
+  @override
+  final int typeId = 1;
+
   @override
   ColoredPath read(BinaryReader reader) {
     var path = ColoredPath(reader.readByte());

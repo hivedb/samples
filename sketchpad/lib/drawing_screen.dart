@@ -1,11 +1,12 @@
-import 'package:sketchpad/clear_button.dart';
-import 'package:sketchpad/colored_path.dart';
-import 'package:sketchpad/drawing_area.dart';
-import 'package:sketchpad/path_painter.dart';
-import 'package:sketchpad/undo_button.dart';
-import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import 'clear_button.dart';
+import 'colored_path.dart';
+import 'drawing_area.dart';
+import 'path_painter.dart';
+import 'undo_button.dart';
 
 class DrawingScreen extends StatefulWidget {
   @override
