@@ -1,0 +1,23 @@
+name: hivedb_samples
+description: A Flutter project for the Hive DB Samples
+
+environment:
+  sdk: '>=2.12.0'
+
+dependencies:
+  backup_restore_books:
+    path: ./backup_restore_books
+  contacts:
+    path: ./contacts
+  counter:
+    path: ./counter
+  favorite_books:
+    path: ./favorite_books
+  sketchpad:
+    path: ./sketchpad
+  todo:
+    path: ./todo
+
+  
+
+# Your other project-level settings...
