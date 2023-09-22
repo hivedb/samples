@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -41,8 +40,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  Box<String> favoriteBooksBox;
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+  late Box<String> favoriteBooksBox;
 
   @override
   void initState() {
@@ -67,12 +67,13 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> createBackup() async {
     if (favoriteBooksBox.isEmpty) {
-      _scaffoldKey.currentState.showSnackBar(
+      _scaffoldKey.currentState?.showSnackBar(
         SnackBar(content: Text('Pick a favorite book.')),
       );
+
       return;
     }
-    _scaffoldKey.currentState.showSnackBar(
+    _scaffoldKey.currentState?.showSnackBar(
       SnackBar(content: Text('Creating backup...')),
     );
     Map<String, String> map = favoriteBooksBox
@@ -91,9 +92,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<Directory> _getDirectory() async {
-    Directory directory = await getExternalStorageDirectory();
+    Directory? directory = await getExternalStorageDirectory();
     const String pathExt = '/backups/';
-    Directory newDirectory = Directory(directory.path + pathExt);
+    Directory newDirectory = Directory(directory!.path + pathExt);
     if (await newDirectory.exists() == false) {
       return newDirectory.create(recursive: true);
     }
@@ -101,14 +102,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> restoreBackup() async {
-    _scaffoldKey.currentState.showSnackBar(
+    _scaffoldKey.currentState?.showSnackBar(
       SnackBar(content: Text('Restoring backup...')),
     );
-    FilePickerResult result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.any,
     );
     if (result == null) return;
-    File file = File(result.files.single.path);
+    File file = File(result.files.single.path.toString());
     favoriteBooksBox.clear();
     Map<dynamic, dynamic> map =
         jsonDecode(await file.readAsString()) as Map<dynamic, dynamic>;
@@ -120,6 +121,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: _scaffoldKey,
       title: 'Favorite Books with Hive',
       theme: ThemeData(
         primarySwatch: Colors.blue,
