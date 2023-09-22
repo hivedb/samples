@@ -1,10 +1,10 @@
-name: contacts_hive
+name: contacts
 description: A HiveDB sample project that demonstrates TypeAdapter functionality.
 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.12.0'
 
 dependencies:
   flutter:
@@ -15,6 +15,8 @@ dependencies:
 dev_dependencies:
   hive_generator: any
   build_runner: ^2.1.0
+  flutter_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true

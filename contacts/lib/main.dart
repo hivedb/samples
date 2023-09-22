@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'main.g.dart';
@@ -14,6 +13,7 @@ enum Relationship {
   @HiveField(1)
   Friend,
 }
+
 const relationships = <Relationship, String>{
   Relationship.Family: "Family",
   Relationship.Friend: "Friend",
@@ -62,8 +62,8 @@ class MyApp extends StatelessWidget {
             return ListView.builder(
               itemCount: box.length,
               itemBuilder: (context, index) {
-                Contact c = box.getAt(index);
-                String relationship = relationships[c.relationship];
+                Contact? c = box.getAt(index);
+                String? relationship = relationships[c?.relationship];
                 return InkWell(
                   onLongPress: () {
                     showDialog(
@@ -71,14 +71,14 @@ class MyApp extends StatelessWidget {
                       barrierDismissible: true,
                       builder: (_) => AlertDialog(
                         content: Text(
-                          "Do you want to delete ${c.name}?",
+                          "Do you want to delete ${c?.name}?",
                         ),
                         actions: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: Text("No"),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
-                          FlatButton(
+                          TextButton(
                             child: Text("Yes"),
                             onPressed: () async {
                               Navigator.of(context).pop();
@@ -96,7 +96,7 @@ class MyApp extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           _buildDivider(),
-                          Text(c.name),
+                          Text(c!.name),
                           _buildDivider(),
                           Text(c.phoneNumber),
                           _buildDivider(),
@@ -138,13 +138,13 @@ class AddContact extends StatefulWidget {
 }
 
 class _AddContactState extends State<AddContact> {
-  String name;
-  int age;
-  String phoneNumber;
-  Relationship relationship;
+  String name = '';
+  int age = 0;
+  String phoneNumber = '';
+  Relationship relationship = Relationship.Friend;
 
   void onFormSubmit() {
-    if (widget.formKey.currentState.validate()) {
+    if (widget.formKey.currentState!.validate()) {
       Box<Contact> contactsBox = Hive.box<Contact>(contactsBoxName);
       contactsBox.add(Contact(name, age, phoneNumber, relationship));
       Navigator.of(context).pop();
@@ -202,14 +202,14 @@ class _AddContactState extends State<AddContact> {
                 items: relationships.keys.map((Relationship value) {
                   return DropdownMenuItem<Relationship>(
                     value: value,
-                    child: Text(relationships[value]),
+                    child: Text(relationships[value]!),
                   );
                 }).toList(),
                 value: relationship,
                 hint: Text("Relationship"),
                 onChanged: (value) {
                   setState(() {
-                    relationship = value;
+                    relationship = value as Relationship;
                   });
                 },
               ),
