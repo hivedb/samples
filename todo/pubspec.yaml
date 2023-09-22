@@ -3,7 +3,7 @@ version: 1.0.0
 description: This is a todo sample app for the Hive package.
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.12.0'
 
 dependencies:
   flutter:

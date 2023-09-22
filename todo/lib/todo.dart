@@ -5,10 +5,10 @@ part 'todo.g.dart';
 @HiveType(typeId: 0)
 class Todo extends HiveObject {
   @HiveField(0)
-  String name;
+  late String name;
 
   @HiveField(1)
-  DateTime created;
+  late DateTime created;
 
   @HiveField(2)
   bool done = false;
