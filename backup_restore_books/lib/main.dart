@@ -31,12 +31,14 @@ const List<String> books = [
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox<String>(favoritesBox);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -52,9 +54,9 @@ class _MyAppState extends State<MyApp> {
 
   Widget getIcon(int index) {
     if (favoriteBooksBox.containsKey(index)) {
-      return Icon(Icons.favorite, color: Colors.red);
+      return const Icon(Icons.favorite, color: Colors.red);
     }
-    return Icon(Icons.favorite_border);
+    return const Icon(Icons.favorite_border);
   }
 
   void onFavoritePress(int index) {
@@ -68,13 +70,13 @@ class _MyAppState extends State<MyApp> {
   Future<void> createBackup() async {
     if (favoriteBooksBox.isEmpty) {
       _scaffoldKey.currentState?.showSnackBar(
-        SnackBar(content: Text('Pick a favorite book.')),
+        const SnackBar(content: Text('Pick a favorite book.')),
       );
 
       return;
     }
     _scaffoldKey.currentState?.showSnackBar(
-      SnackBar(content: Text('Creating backup...')),
+      const SnackBar(content: Text('Creating backup...')),
     );
     Map<String, String> map = favoriteBooksBox
         .toMap()
@@ -103,7 +105,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> restoreBackup() async {
     _scaffoldKey.currentState?.showSnackBar(
-      SnackBar(content: Text('Restoring backup...')),
+      const SnackBar(content: Text('Restoring backup...')),
     );
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.any,
@@ -129,14 +131,14 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Favorite Books w/ Hive'),
+          title: const Text('Favorite Books w/ Hive'),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.backup),
+              icon: const Icon(Icons.backup),
               onPressed: createBackup,
             ),
             IconButton(
-              icon: Icon(Icons.restore),
+              icon: const Icon(Icons.restore),
               onPressed: restoreBackup,
             ),
           ],
