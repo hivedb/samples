@@ -12,7 +12,7 @@ class ColoredPath {
   static List<Paint> _paints = <Paint>[];
 
   Paint get paint {
-    if (_paints == null) {
+    if (_paints.isEmpty) {
       _paints = [];
       for (var color in colors) {
         _paints.add(
