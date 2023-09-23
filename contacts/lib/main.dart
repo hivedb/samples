@@ -9,14 +9,14 @@ const String contactsBoxName = "contacts";
 @HiveType(typeId: 1)
 enum Relationship {
   @HiveField(0)
-  Family,
+  family,
   @HiveField(1)
-  Friend,
+  friend,
 }
 
 const relationships = <Relationship, String>{
-  Relationship.Family: "Family",
-  Relationship.Friend: "Friend",
+  Relationship.family: "Family",
+  Relationship.friend: "Friend",
 };
 
 @HiveType(typeId: 0)
@@ -38,27 +38,30 @@ void main() async {
   Hive.registerAdapter(ContactAdapter());
   Hive.registerAdapter(RelationshipAdapter());
   await Hive.openBox<Contact>(contactsBoxName);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    Widget _buildDivider() => const SizedBox(height: 5);
+    Widget buildDivider() => const SizedBox(height: 5);
 
     return MaterialApp(
       title: 'Contacts App',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Contacts App with Hive'),
+          title: const Text('Contacts App with Hive'),
         ),
         body: ValueListenableBuilder(
           valueListenable: Hive.box<Contact>(contactsBoxName).listenable(),
           builder: (context, Box<Contact> box, _) {
-            if (box.values.isEmpty)
-              return Center(
+            if (box.values.isEmpty) {
+              return const Center(
                 child: Text("No contacts"),
               );
+            }
             return ListView.builder(
               itemCount: box.length,
               itemBuilder: (context, index) {
@@ -75,11 +78,11 @@ class MyApp extends StatelessWidget {
                         ),
                         actions: <Widget>[
                           TextButton(
-                            child: Text("No"),
+                            child: const Text("No"),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                            child: Text("Yes"),
+                            child: const Text("Yes"),
                             onPressed: () async {
                               Navigator.of(context).pop();
                               await box.deleteAt(index);
@@ -95,15 +98,15 @@ class MyApp extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          _buildDivider(),
+                          buildDivider(),
                           Text(c!.name),
-                          _buildDivider(),
+                          buildDivider(),
                           Text(c.phoneNumber),
-                          _buildDivider(),
+                          buildDivider(),
                           Text("Age: ${c.age}"),
-                          _buildDivider(),
+                          buildDivider(),
                           Text("Relationship: $relationship"),
-                          _buildDivider(),
+                          buildDivider(),
                         ],
                       ),
                     ),
@@ -116,7 +119,7 @@ class MyApp extends StatelessWidget {
         floatingActionButton: Builder(
           builder: (context) {
             return FloatingActionButton(
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => AddContact()),
@@ -133,15 +136,17 @@ class MyApp extends StatelessWidget {
 class AddContact extends StatefulWidget {
   final formKey = GlobalKey<FormState>();
 
+  AddContact({Key? key}) : super(key: key);
+
   @override
-  _AddContactState createState() => _AddContactState();
+  State<AddContact> createState() => _AddContactState();
 }
 
 class _AddContactState extends State<AddContact> {
   String name = '';
   int age = 0;
   String phoneNumber = '';
-  Relationship relationship = Relationship.Friend;
+  Relationship relationship = Relationship.friend;
 
   void onFormSubmit() {
     if (widget.formKey.currentState!.validate()) {
@@ -206,7 +211,7 @@ class _AddContactState extends State<AddContact> {
                   );
                 }).toList(),
                 value: relationship,
-                hint: Text("Relationship"),
+                hint: const Text("Relationship"),
                 onChanged: (value) {
                   setState(() {
                     relationship = value as Relationship;
@@ -214,8 +219,8 @@ class _AddContactState extends State<AddContact> {
                 },
               ),
               OutlinedButton(
-                child: Text("Submit"),
                 onPressed: onFormSubmit,
+                child: const Text("Submit"),
               ),
             ],
           ),

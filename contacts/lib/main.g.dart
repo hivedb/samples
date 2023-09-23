@@ -57,21 +57,21 @@ class RelationshipAdapter extends TypeAdapter<Relationship> {
   Relationship read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return Relationship.Family;
+        return Relationship.family;
       case 1:
-        return Relationship.Friend;
+        return Relationship.friend;
       default:
-        return Relationship.Family;
+        return Relationship.family;
     }
   }
 
   @override
   void write(BinaryWriter writer, Relationship obj) {
     switch (obj) {
-      case Relationship.Family:
+      case Relationship.family:
         writer.writeByte(0);
         break;
-      case Relationship.Friend:
+      case Relationship.friend:
         writer.writeByte(1);
         break;
     }
