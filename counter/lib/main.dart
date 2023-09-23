@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
@@ -49,7 +48,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({@required this.title});
+  const MyHomePage({required this.title});
 
   final String title;
 
@@ -58,7 +57,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Box<int> _box;
+  late Box<int> _box;
 
   @override
   void initState() {
@@ -87,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (context, box, _) {
                 return Text(
                   '${box.get('counter', defaultValue: 0)}',
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 );
               },
             )
@@ -99,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           FloatingActionButton(
             onPressed: () {
-              _box.put('counter', _box.get('counter', defaultValue: 0) - 1);
+              _box.put('counter', _box.get('counter', defaultValue: 0)! - 1);
             },
             tooltip: 'Decrement',
             child: Icon(Icons.remove),
@@ -109,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           FloatingActionButton(
             onPressed: () {
-              _box.put('counter', _box.get('counter', defaultValue: 0) + 1);
+              _box.put('counter', _box.get('counter', defaultValue: 0)! + 1);
             },
             tooltip: 'Increment',
             child: Icon(Icons.add),

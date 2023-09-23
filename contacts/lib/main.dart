@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'main.g.dart';
@@ -10,13 +9,14 @@ const String contactsBoxName = "contacts";
 @HiveType(typeId: 1)
 enum Relationship {
   @HiveField(0)
-  Family,
+  family,
   @HiveField(1)
-  Friend,
+  friend,
 }
+
 const relationships = <Relationship, String>{
-  Relationship.Family: "Family",
-  Relationship.Friend: "Friend",
+  Relationship.family: "Family",
+  Relationship.friend: "Friend",
 };
 
 @HiveType(typeId: 0)
@@ -38,32 +38,35 @@ void main() async {
   Hive.registerAdapter(ContactAdapter());
   Hive.registerAdapter(RelationshipAdapter());
   await Hive.openBox<Contact>(contactsBoxName);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    Widget _buildDivider() => const SizedBox(height: 5);
+    Widget buildDivider() => const SizedBox(height: 5);
 
     return MaterialApp(
       title: 'Contacts App',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Contacts App with Hive'),
+          title: const Text('Contacts App with Hive'),
         ),
         body: ValueListenableBuilder(
           valueListenable: Hive.box<Contact>(contactsBoxName).listenable(),
           builder: (context, Box<Contact> box, _) {
-            if (box.values.isEmpty)
-              return Center(
+            if (box.values.isEmpty) {
+              return const Center(
                 child: Text("No contacts"),
               );
+            }
             return ListView.builder(
               itemCount: box.length,
               itemBuilder: (context, index) {
-                Contact c = box.getAt(index);
-                String relationship = relationships[c.relationship];
+                Contact? c = box.getAt(index);
+                String? relationship = relationships[c?.relationship];
                 return InkWell(
                   onLongPress: () {
                     showDialog(
@@ -71,15 +74,15 @@ class MyApp extends StatelessWidget {
                       barrierDismissible: true,
                       builder: (_) => AlertDialog(
                         content: Text(
-                          "Do you want to delete ${c.name}?",
+                          "Do you want to delete ${c?.name}?",
                         ),
                         actions: <Widget>[
-                          FlatButton(
-                            child: Text("No"),
+                          TextButton(
+                            child: const Text("No"),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
-                          FlatButton(
-                            child: Text("Yes"),
+                          TextButton(
+                            child: const Text("Yes"),
                             onPressed: () async {
                               Navigator.of(context).pop();
                               await box.deleteAt(index);
@@ -95,15 +98,15 @@ class MyApp extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          _buildDivider(),
-                          Text(c.name),
-                          _buildDivider(),
+                          buildDivider(),
+                          Text(c!.name),
+                          buildDivider(),
                           Text(c.phoneNumber),
-                          _buildDivider(),
+                          buildDivider(),
                           Text("Age: ${c.age}"),
-                          _buildDivider(),
+                          buildDivider(),
                           Text("Relationship: $relationship"),
-                          _buildDivider(),
+                          buildDivider(),
                         ],
                       ),
                     ),
@@ -116,7 +119,7 @@ class MyApp extends StatelessWidget {
         floatingActionButton: Builder(
           builder: (context) {
             return FloatingActionButton(
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => AddContact()),
@@ -133,18 +136,20 @@ class MyApp extends StatelessWidget {
 class AddContact extends StatefulWidget {
   final formKey = GlobalKey<FormState>();
 
+  AddContact({Key? key}) : super(key: key);
+
   @override
-  _AddContactState createState() => _AddContactState();
+  State<AddContact> createState() => _AddContactState();
 }
 
 class _AddContactState extends State<AddContact> {
-  String name;
-  int age;
-  String phoneNumber;
-  Relationship relationship;
+  String name = '';
+  int age = 0;
+  String phoneNumber = '';
+  Relationship relationship = Relationship.friend;
 
   void onFormSubmit() {
-    if (widget.formKey.currentState.validate()) {
+    if (widget.formKey.currentState!.validate()) {
       Box<Contact> contactsBox = Hive.box<Contact>(contactsBoxName);
       contactsBox.add(Contact(name, age, phoneNumber, relationship));
       Navigator.of(context).pop();
@@ -202,20 +207,20 @@ class _AddContactState extends State<AddContact> {
                 items: relationships.keys.map((Relationship value) {
                   return DropdownMenuItem<Relationship>(
                     value: value,
-                    child: Text(relationships[value]),
+                    child: Text(relationships[value]!),
                   );
                 }).toList(),
                 value: relationship,
-                hint: Text("Relationship"),
+                hint: const Text("Relationship"),
                 onChanged: (value) {
                   setState(() {
-                    relationship = value;
+                    relationship = value as Relationship;
                   });
                 },
               ),
               OutlinedButton(
-                child: Text("Submit"),
                 onPressed: onFormSubmit,
+                child: const Text("Submit"),
               ),
             ],
           ),

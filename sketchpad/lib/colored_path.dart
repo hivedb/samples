@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class ColoredPath {
   static const colors = [
@@ -10,10 +9,10 @@ class ColoredPath {
     Colors.amber,
   ];
 
-  static List<Paint> _paints;
+  static List<Paint> _paints = <Paint>[];
 
   Paint get paint {
-    if (_paints == null) {
+    if (_paints.isEmpty) {
       _paints = [];
       for (var color in colors) {
         _paints.add(

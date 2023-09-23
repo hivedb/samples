@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo/new_todo_dialog.dart';
 import 'package:todo/todo.dart';
@@ -84,7 +83,7 @@ class TodoMainScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWithBox(BuildContext context, Box settings, Widget child) {
+  Widget _buildWithBox(BuildContext context, Box settings, Widget? child) {
     var reversed = settings.get('reversed', defaultValue: true) as bool;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
